@@ -24,6 +24,7 @@ dbus-python==1.2.16
 defer==1.0.6
 distro==1.9.0
 distro-info==0.23+ubuntu1.1
+dj-database-url==1.2.0
 Django==4.2.23
 django-cors-headers==4.4.0
 djangorestframework==3.15.2
@@ -151,6 +152,7 @@ watchfiles==0.24.0
 weasel==0.4.3
 websockets==13.1
 Werkzeug==3.0.6
+whitenoise==6.7.0
 wrapt==2.0.1
 xkit==0.0.0
 zipp==3.20.2

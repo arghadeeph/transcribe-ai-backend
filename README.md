@@ -80,7 +80,7 @@ python manage.py runserver
 
 ## ⚠️ Requirements
 
-* Python 3.9+
+* Python 3.8+
 * FFmpeg installed on system
 
 ---
