@@ -1,15 +1,14 @@
 
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from openai import OpenAI
+import openai
 from django.conf import settings
 import tempfile
 from .extract_audio import extract_audio
 import os
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+openai.api_key = settings.OPENAI_API_KEY
 
 class TranscribeView(APIView):
 
@@ -43,7 +42,7 @@ class TranscribeView(APIView):
 
             # Send to Whisper
             with open(audio_path, "rb") as audio_file:
-                transcript_response = client.audio.transcriptions.create(
+                transcript_response = openai.audio.transcriptions.create(
                     model="whisper-1",
                     file=audio_file,
                     response_format="verbose_json"
@@ -66,7 +65,7 @@ class TranscribeView(APIView):
                 os.remove(audio_path)
 
             #Translation by gpt4
-            translation = client.responses.create(
+            translation = openai.responses.create(
                 model='gpt-4.1-mini',
                 input = f"""
                         Translate the following text into {language}.
