@@ -42,11 +42,12 @@ class TranscribeView(APIView):
 
             # Send to Whisper
             with open(audio_path, "rb") as audio_file:
-                transcript_response = openai.audio.transcriptions.create(
+                transcript_response = openai.Audio.transcribe(
                     model="whisper-1",
                     file=audio_file,
                     response_format="verbose_json"
                 )
+
 
             transcription_text = transcript_response.text
             segments = getattr(transcript_response, "segments", [])
@@ -65,10 +66,12 @@ class TranscribeView(APIView):
                 os.remove(audio_path)
 
             #Translation by gpt4
-            translation = openai.responses.create(
-                model='gpt-4.1-mini',
-                input = f"""
-                        Translate the following text into {language}.
+            translation_response = openai.ChatCompletion.create(
+                model="gpt-4.1-mini",  # or gpt-3.5-turbo
+                messages=[
+                    {"role": "system", "content": "You are a helpful translator."},
+                    {"role": "user", "content": f"""
+                        Translate the following text into {language}:
 
                         Requirements:
                         - Natural and fluent (not word-for-word)
@@ -79,10 +82,12 @@ class TranscribeView(APIView):
 
                         Text:
                         {transcription_text}
-                        """
+                        """}
+                ]
+            )
 
-                )
-            transleted_text = translation.output_text
+            translated_text = translation_response['choices'][0]['message']['content']
+
 
             return Response({
                  "meta": {
@@ -98,7 +103,7 @@ class TranscribeView(APIView):
                     "segments": filtired_segments
                 },
                 "translated_text":{
-                    "translation": transleted_text
+                    "translation": translated_text
                 } 
             })
         
